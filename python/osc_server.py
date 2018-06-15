@@ -20,6 +20,9 @@ class OscServer:
         :param args: OSC message arguments, the features to pass to the classifier.
         :return:
         """
+        args = list(args)
+        hand_type = args.pop(0)
+
         print('Message received', args)
         # construct a tuple of the features, which will be yielded by the generator.
         predict_x = tuple([[float(x)] for x in args])
@@ -31,7 +34,7 @@ class OscServer:
             probability = pred_dict['probabilities'][class_id]
             print('Sending prediction:', class_id)
             # send the prediction back.
-            self.client.send_message("/prediction", int(class_id))
+            self.client.send_message("/prediction", [hand_type, int(class_id)])
 
     def __init__(self, address, port, classifier):
         """
